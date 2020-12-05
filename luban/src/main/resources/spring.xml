@@ -6,7 +6,7 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
 	   https://www.springframework.org/schema/beans/spring-beans.xsd
 	   http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd"
-	   >
+	   default-autowire="byType">
 
 	<bean id="user" class="com.luban.entity.User"/>
 

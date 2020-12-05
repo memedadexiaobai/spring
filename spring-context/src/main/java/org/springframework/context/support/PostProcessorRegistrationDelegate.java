@@ -88,8 +88,8 @@ final class PostProcessorRegistrationDelegate {
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
 			// 首先，先执行实现了PriorityOrdered接口的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry方法
-			String[] postProcessorNames =
-					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
+			String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class,
+					true, false);
 			for (String ppName : postProcessorNames) {
 				// 判断这个类是否还实现了PriorityOrdered接口
 				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
@@ -120,8 +120,9 @@ final class PostProcessorRegistrationDelegate {
 
 			// Finally, invoke all other BeanDefinitionRegistryPostProcessors until no further ones appear.
 			// 最后，最后其他普通的BeanDefinitionRegistryPostProcessors的postProcessBeanDefinitionRegistry方法
-			boolean reiterate = true;
-			// 在一个BeanDefinitionRegistryPostProcessor中可以注册另一个BeanDefinitionRegistryPostProcessor，所以需要递归找出所有的BeanDefinitionRegistryPostProcessor
+			boolean reiterate = true; //reiterate 重复
+			// 在一个BeanDefinitionRegistryPostProcessor中可以注册另一个BeanDefinitionRegistryPostProcessor，
+			// 所以需要递归找出所有的BeanDefinitionRegistryPostProcessor
 			// 一个没有实现PriorityOrdered接口的BeanDefinitionRegistryPostProcessor如果在内部注册了一个实现了PriorityOrdered接口的BeanDefinitionRegistryPostProcessor，那么就是没有实现PriorityOrdered接口的先执行
 			while (reiterate) {
 				reiterate = false;

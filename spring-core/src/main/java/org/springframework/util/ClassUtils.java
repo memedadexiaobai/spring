@@ -534,7 +534,7 @@ public abstract class ClassUtils {
 
 	/**
 	 * Check if the right-hand side type may be assigned to the left-hand side
-	 * type, assuming setting by reflection. Considers primitive wrapper
+	 * type, assuming(假设) setting by reflection. Considers primitive(原始的) wrapper
 	 * classes as assignable to the corresponding primitive types.
 	 * @param lhsType the target type
 	 * @param rhsType the value type that should be assigned to the target type

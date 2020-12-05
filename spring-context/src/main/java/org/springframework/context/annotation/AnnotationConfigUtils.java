@@ -148,12 +148,13 @@ public abstract class AnnotationConfigUtils {
 		DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);
 		if (beanFactory != null) {
 
-			// 设置beanFactory的OrderComparator，为AnnotationAwareOrderComparator
+			// 设置beanFactory的OrderComparator，为AnnotationAwareOrderComparator 默认是null 针对DefaultListableBeanFactory而言
 			// 它是一个Comparator，是一个比较器，可以用来进行排序，比如new ArrayList<>().sort(Comparator);
 			if (!(beanFactory.getDependencyComparator() instanceof AnnotationAwareOrderComparator)) {
 				beanFactory.setDependencyComparator(AnnotationAwareOrderComparator.INSTANCE);
 			}
-			// 设置自动装配候选者解析式（判断某个bean是不是可以用来进行进行自动注入）
+			// 设置自动装配候选者解析式（判断某个bean是不是可以用来进行进行自动注入）  默认是SimpleAutowireCandidateResolver 针对DefaultListableBeanFactory而言
+			//会修改为ContextAnnotationAutowireCandidateResolver
 			if (!(beanFactory.getAutowireCandidateResolver() instanceof ContextAnnotationAutowireCandidateResolver)) {
 				beanFactory.setAutowireCandidateResolver(new ContextAnnotationAutowireCandidateResolver());
 			}
@@ -278,13 +279,12 @@ public abstract class AnnotationConfigUtils {
 	// 2.NO:不开启代理
 	// 3.INTERFACES:使用jdk动态代理
 	// 4.TARGET_CLASS:使用cglib代理
-	// 加入有一个单例beanA，其中有一个属性B，B的Scope是session，此时，容器在启动时创建A的过程中需要注入B属性，
+	// 假如有一个单例beanA，其中有一个属性B，B的Scope是session，此时，容器在启动时创建A的过程中需要注入B属性，
 	// 但是B的scope是session,这种情况下是注入不了的，是会报错的
     // 但是如果将B的Scope的ProxyMode属性配置为INTERFACES/TARGET_CLASS时，那么B就会生成一个ScopedProxyFactoryBean类型的BeanDefinitionHolder
 	// 在A注入B时，就会注入一个ScopedProxyFactoryBean类型的Bean
 	static BeanDefinitionHolder applyScopedProxyMode(
 			ScopeMetadata metadata, BeanDefinitionHolder definition, BeanDefinitionRegistry registry) {
-
 		ScopedProxyMode scopedProxyMode = metadata.getScopedProxyMode();
 		if (scopedProxyMode.equals(ScopedProxyMode.NO)) {
 			return definition;

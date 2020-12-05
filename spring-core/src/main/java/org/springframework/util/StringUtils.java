@@ -126,7 +126,7 @@ public abstract class StringUtils {
 	 * @see #hasLength(CharSequence)
 	 * @see #hasText(String)
 	 */
-	public static boolean hasLength(@Nullable String str) {
+	public static boolean  hasLength(@Nullable String str) {
 		return (str != null && !str.isEmpty());
 	}
 

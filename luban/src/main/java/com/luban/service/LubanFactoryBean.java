@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-
+@SuppressWarnings("rawtypes")
 public class LubanFactoryBean implements FactoryBean { // bean对象--proxyInstance-->UserMapper类型
 
 	private Class mapperInterface;

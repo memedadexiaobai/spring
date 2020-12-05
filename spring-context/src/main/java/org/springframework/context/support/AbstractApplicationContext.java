@@ -528,6 +528,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			// 准备BeanFactory
 			// 1. 设置BeanFactory的类加载器、表达式解析器、类型转化注册器
 			// 2. 添加三个BeanPostProcessor，注意是具体的BeanPostProcessor实例对象
+			// ApplicationContextAwareProcessor  ApplicationListenerDetector LoadTimeWeaverAwareProcessor
 			// 3. 记录ignoreDependencyInterface
 			// 4. 记录ResolvableDependency
 			// 5. 添加三个单例Bean
@@ -646,7 +647,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		this.earlyApplicationEvents = new LinkedHashSet<>();
 	}
 
-	/**
+	/**re
 	 * <p>Replace any stub property sources with actual instances.
 	 * @see org.springframework.core.env.PropertySource.StubPropertySource
 	 * @see org.springframework.web.context.support.WebApplicationContextUtils#initServletPropertySources
@@ -707,14 +708,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
 		}
 
-		// Register default environment beans.
+		// Register default environment beans.  environment
 		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
 			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
 		}
-		if (!beanFactory.containsLocalBean(SYSTEM_PROPERTIES_BEAN_NAME)) {
+		if (!beanFactory.containsLocalBean(SYSTEM_PROPERTIES_BEAN_NAME)) {  //systemProperties
 			beanFactory.registerSingleton(SYSTEM_PROPERTIES_BEAN_NAME, getEnvironment().getSystemProperties());
 		}
-		if (!beanFactory.containsLocalBean(SYSTEM_ENVIRONMENT_BEAN_NAME)) {
+		if (!beanFactory.containsLocalBean(SYSTEM_ENVIRONMENT_BEAN_NAME)) { //systemEnvironment
 			beanFactory.registerSingleton(SYSTEM_ENVIRONMENT_BEAN_NAME, getEnvironment().getSystemEnvironment());
 		}
 	}

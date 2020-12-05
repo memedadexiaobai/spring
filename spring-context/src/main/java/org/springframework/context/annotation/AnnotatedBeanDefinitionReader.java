@@ -89,6 +89,7 @@ public class AnnotatedBeanDefinitionReader {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		Assert.notNull(environment, "Environment must not be null");
 		this.registry = registry;
+		//返回 ConditionContextImpl
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
 
 		// 生成并注册5个BeanDefinition
@@ -271,7 +272,7 @@ public class AnnotatedBeanDefinitionReader {
 
 		// 直接生成一个AnnotatedGenericBeanDefinition
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
-		// 判断当前abd是否被标注了@Conditional注解，并判断是否符合所指定的条件，如果不符合，则跳过，不进行注册
+		//判断是否有 @component  @Conditional 等等注解 没有直接返回
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
 		}
@@ -324,7 +325,7 @@ public class AnnotatedBeanDefinitionReader {
 	private static Environment getOrCreateEnvironment(BeanDefinitionRegistry registry) {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		if (registry instanceof EnvironmentCapable) {
-			// 会调用AbstractApplicationContext的getEnvironment方法，在这个方法中会去创建Environment
+			// 会调用AbstractApplicationContext的getEnvironment方法，在这个方法中会去创建Environment  返回是StandardEnvironment
 			return ((EnvironmentCapable) registry).getEnvironment();
 		}
 		return new StandardEnvironment();

@@ -457,6 +457,7 @@ class ConfigurationClassBeanDefinitionReader {
 			if (skip == null) {
 				if (configClass.isImported()) {
 					boolean allSkipped = true;
+					//查找导入这个类的配置类 如果 这个类是跳过的话 旗下所有类都直接跳过
 					for (ConfigurationClass importedBy : configClass.getImportedBy()) {
 						if (!shouldSkip(importedBy)) {
 							allSkipped = false;

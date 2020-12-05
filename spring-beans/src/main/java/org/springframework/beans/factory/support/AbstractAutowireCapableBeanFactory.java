@@ -512,7 +512,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
-			// 1、实例化前 null
+			// 1、实例化前 null 相当于给一个外部干预bean创建的机会
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);  // 对象
 			if (bean != null) {
 				return bean;
@@ -606,7 +606,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
-			// 此时的bean还没有完成属性注入，是一个非常简单的对象
+			// 此时的bean还没有完成属性注入，是一个非常简单的对象  只是查找到了所有的注入点
 			// 构造一个对象工厂添加到singletonFactories中
 			// 第四次调用后置处理器
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));  // AService
@@ -1155,9 +1155,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 				Class<?> targetType = determineTargetType(beanName, mbd);
 				if (targetType != null) {
-					// 实例化前
+					// 实例化前  只会走 InstantiationAwareBeanPostProcessor 类型的
 					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
-					if (bean != null) {
+					if (bean != null) {  //BeanPostProcessors 所有都会走 当返回不为null时
 						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 					}
 				}
@@ -1243,7 +1243,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				// 该BeanDefinition是否已经决定了要使用的构造方法或工厂方法
 				if (mbd.resolvedConstructorOrFactoryMethod != null) {
 					resolved = true;
-					// 该BeanDefinition是否已经决定了要使用的构造方法参数
+					// 该BeanDefinition是否已经决定了要使用的构造方法参数  默认false
 					autowireNecessary = mbd.constructorArgumentsResolved;
 				}
 			}

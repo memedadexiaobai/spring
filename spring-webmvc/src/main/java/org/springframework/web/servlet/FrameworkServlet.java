@@ -992,7 +992,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		Throwable failureCause = null;
 
 		LocaleContext previousLocaleContext = LocaleContextHolder.getLocaleContext();
-		LocaleContext localeContext = buildLocaleContext(request);
+		LocaleContext localeContext = buildLocaleContext(request); //SimpleLocaleContext 使用的这个
 
 		RequestAttributes previousAttributes = RequestContextHolder.getRequestAttributes();
 		ServletRequestAttributes requestAttributes = buildRequestAttributes(request, response, previousAttributes);

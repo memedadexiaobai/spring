@@ -297,7 +297,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 			// 创建Bean
 
-			if (!typeCheckOnly) {
+			if (!typeCheckOnly) { //alreadyCreated 添加 beanName 对应的bean   mergedBeanDefinitions如果包含对应的bean 则将其属性 stale 置为true 表示旧的
 				markBeanAsCreated(beanName);
 			}
 
@@ -536,7 +536,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 		String beanName = transformedBeanName(name);
 		// 是不是FactoryBean的工厂名字
-		boolean isFactoryDereference = BeanFactoryUtils.isFactoryDereference(name);
+		boolean isFactoryDereference = BeanFactoryUtils.isFactoryDereference(name); //是否 FactoryBean索引 也就是以&开头
 
 		// Check manually registered singletons.
 		// 检查手动添加到单例池中的bean
@@ -1328,10 +1328,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected RootBeanDefinition getMergedLocalBeanDefinition(String beanName) throws BeansException {
 		// Quick check on the concurrent map first, with minimal locking.
 		RootBeanDefinition mbd = this.mergedBeanDefinitions.get(beanName);
-		if (mbd != null && !mbd.stale) {
+		if (mbd != null && !mbd.stale) { //mbd 不是null并且不需要合并的时候直接返回
 			return mbd;
 		}
-		return getMergedBeanDefinition(beanName, getBeanDefinition(beanName));
+		return getMergedBeanDefinition(beanName, getBeanDefinition(beanName));  //从beanDefinitionMap获取
 	}
 
 	/**
@@ -1353,24 +1353,24 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * parent if the given bean's definition is a child bean definition.
 	 * @param beanName the name of the bean definition
 	 * @param bd the original bean definition (Root/ChildBeanDefinition)
-	 * @param containingBd the containing bean definition in case of inner bean,
+	 * @param containingBd the containing bean definition in case of inner bean, 内部bean是否包含bean定义
 	 * or {@code null} in case of a top-level bean
 	 * @return a (potentially merged) RootBeanDefinition for the given bean
 	 * @throws BeanDefinitionStoreException in case of an invalid bean definition
 	 */
 	protected RootBeanDefinition getMergedBeanDefinition(
-			String beanName, BeanDefinition bd, @Nullable BeanDefinition containingBd)
+			String beanName, BeanDefinition bd, @Nullable BeanDefinition containingBd) //containingBd 是否包含BeanDefinition
 			throws BeanDefinitionStoreException {
 
 		synchronized (this.mergedBeanDefinitions) {
 			RootBeanDefinition mbd = null;
 			RootBeanDefinition previous = null;
 
-			// Check with full lock now in order to enforce the same merged instance.
+			// Check with full lock now in order to(为了) enforce(实行) the same merged instance.
 			if (containingBd == null) {
 				mbd = this.mergedBeanDefinitions.get(beanName);
 			}
-
+			//mbd 等于 null 或者 mbd需要合并的时候
 			if (mbd == null || mbd.stale) {
 				previous = mbd;
 				// 如果bd的父bd为空
@@ -1388,7 +1388,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					// Child bean definition: needs to be merged with parent.
 					BeanDefinition pbd;
 					try {
-						// 父bd的beanName
+						// 父bd的beanName 里边有对是否是别名的判断
 						String parentBeanName = transformedBeanName(bd.getParentName());
 						if (!beanName.equals(parentBeanName)) {
 							pbd = getMergedBeanDefinition(parentBeanName);
@@ -1483,7 +1483,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected void clearMergedBeanDefinition(String beanName) {
 		RootBeanDefinition bd = this.mergedBeanDefinitions.get(beanName);
 		if (bd != null) {
-			bd.stale = true;
+			bd.stale = true; //stale 陈旧的
 		}
 	}
 
@@ -1519,7 +1519,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			throws CannotLoadBeanClassException {
 
 		try {
-			// 直接返回beanClass
+			// 直接返回beanClass 判断beanClass 是否是Class 类型 是直接返回 否则走下边的解析
 			if (mbd.hasBeanClass()) {
 				return mbd.getBeanClass();
 			}
@@ -1571,7 +1571,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		}
 
 		// 获取BeanDefinition中所指定的beanClass属性的值，beanClass属性的类型为Object，可以指定为某个类名
-		String className = mbd.getBeanClassName(); // 字符串  #{xxx}
+		String className = mbd.getBeanClassName(); // 字符串  #{xxx}  采用#可以直接注入对象
 		if (className != null) {
 			// className可以有SpEL,所以需要解析
 			Object evaluated = evaluateBeanDefinitionString(className, mbd);
@@ -1605,7 +1605,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 		}
 
-		// Resolve regularly, caching the result in the BeanDefinition...
+		// Resolve regularly, caching the result in the BeanDefinition...  用指定的类加载器加载 beanClass 对应的类并实例化
 		return mbd.resolveBeanClass(beanClassLoader);
 	}
 
@@ -1668,7 +1668,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @param mbd the corresponding bean definition
 	 */
 	protected boolean isFactoryBean(String beanName, RootBeanDefinition mbd) {
-		Boolean result = mbd.isFactoryBean; // isFactoryBean起到了缓存作用，对于一个FactroyBean，一开始这个熟悉是null，下面就会进行类型推导，判断出来是FactoryBean之后，就记录在这个属性中
+		// isFactoryBean起到了缓存作用，对于一个FactroyBean，一开始这个熟悉是null，下面就会进行类型推导，判断出来是FactoryBean之后，就记录在这个属性中
+		Boolean result = mbd.isFactoryBean;
 		if (result == null) {
 			Class<?> beanType = predictBeanType(beanName, mbd, FactoryBean.class);
 			result = (beanType != null && FactoryBean.class.isAssignableFrom(beanType));

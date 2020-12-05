@@ -12,7 +12,9 @@ import org.springframework.core.type.AnnotationMetadata;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("rawtypes")
 public class LubanBeanDefinitionRegistar implements ImportBeanDefinitionRegistrar {
+
 
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry, BeanNameGenerator importBeanNameGenerator) {

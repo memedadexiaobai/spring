@@ -501,7 +501,7 @@ abstract class AnnotationsScanner {
 				boolean allIgnored = true;
 				for (int i = 0; i < annotations.length; i++) {
 					Annotation annotation = annotations[i];
-					if (isIgnorable(annotation.annotationType()) ||
+					if (isIgnorable(annotation.annotationType()) ||  //AnnotationFilter PLAIN = packages("java.lang", "org.springframework.lang");
 							!AttributeMethods.forAnnotationType(annotation.annotationType()).isValid(annotation)) {
 						annotations[i] = null;
 					}
@@ -533,6 +533,7 @@ abstract class AnnotationsScanner {
 	}
 
 	static boolean isKnownEmpty(AnnotatedElement source, SearchStrategy searchStrategy) {
+		//判断是否是普通的java注解
 		if (hasPlainJavaAnnotationsOnly(source)) {
 			return true;
 		}
@@ -547,9 +548,10 @@ abstract class AnnotationsScanner {
 
 	static boolean hasPlainJavaAnnotationsOnly(@Nullable Object annotatedElement) {
 		if (annotatedElement instanceof Class) {
+			//判断类型是否以java.开头 代表jdk的类 或者 是否等于 Ordered 类
 			return hasPlainJavaAnnotationsOnly((Class<?>) annotatedElement);
 		}
-		else if (annotatedElement instanceof Member) {
+		else if (annotatedElement instanceof Member) {  // 是否是Member的实例 表示是反射获取的诸如Method等类型
 			return hasPlainJavaAnnotationsOnly(((Member) annotatedElement).getDeclaringClass());
 		}
 		else {

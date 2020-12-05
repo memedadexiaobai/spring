@@ -28,8 +28,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Strategy used to determine annotations that act as containers for other
- * annotations. The {@link #standardRepeatables()} method provides a default
+ * Strategy used to determine annotations that act as containers for other annotations.
+ * The {@link #standardRepeatables()} method provides a default
  * strategy that respects Java's {@link Repeatable @Repeatable} support and
  * should be suitable for most situations.
  *

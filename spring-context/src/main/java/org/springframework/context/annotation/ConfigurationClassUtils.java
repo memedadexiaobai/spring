@@ -160,6 +160,10 @@ abstract class ConfigurationClassUtils {
 			return false;
 		}
 
+		//candidateIndicators.add(Component.class.getName());
+		//		candidateIndicators.add(ComponentScan.class.getName());
+		//		candidateIndicators.add(Import.class.getName());
+		//		candidateIndicators.add(ImportResource.class.getName());
 		// Any of the typical annotations found?
 		for (String indicator : candidateIndicators) {
 			if (metadata.isAnnotated(indicator)) {

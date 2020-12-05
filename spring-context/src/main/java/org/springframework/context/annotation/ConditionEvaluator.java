@@ -39,7 +39,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.MultiValueMap;
 
 /**
- * Internal class used to evaluate {@link Conditional} annotations.
+ * Internal class used to evaluate(评估) {@link Conditional} annotations.
  *
  * @author Phillip Webb
  * @author Juergen Hoeller
@@ -48,7 +48,6 @@ import org.springframework.util.MultiValueMap;
 class ConditionEvaluator {
 
 	private final ConditionContextImpl context;
-
 
 	/**
 	 * Create a new {@link ConditionEvaluator} instance.
@@ -84,6 +83,7 @@ class ConditionEvaluator {
 
 		if (phase == null) {
 			if (metadata instanceof AnnotationMetadata &&
+					//判断是否符合存在Component ComponentScan Import ImportResource注解 和 @bean 方法
 					ConfigurationClassUtils.isConfigurationCandidate((AnnotationMetadata) metadata)) {
 				return shouldSkip(metadata, ConfigurationPhase.PARSE_CONFIGURATION);
 			}
@@ -91,9 +91,12 @@ class ConditionEvaluator {
 		}
 
 		List<Condition> conditions = new ArrayList<>();
-		for (String[] conditionClasses : getConditionClasses(metadata)) {
-			for (String conditionClass : conditionClasses) {
-				Condition condition = getCondition(conditionClass, this.context.getClassLoader());
+		//获取类中的Conditional注解
+		//Conditional 注解 只有一个value属性 Class<? extends Condition>[] value();   value中的元素相当于对 Conditional 的解析 也就是符合那种情况  这种存在
+		//存在value里边是多个值的情况
+		for (String[] conditionClasses : getConditionClasses(metadata)) {  //先获取该类中标了Conditional注解的所有类
+			for (String conditionClass : conditionClasses) { //遍历value中的多个类
+				Condition condition = getCondition(conditionClass, this.context.getClassLoader());  //加载Condition类并实例化
 				conditions.add(condition);
 			}
 		}
@@ -115,6 +118,7 @@ class ConditionEvaluator {
 
 	@SuppressWarnings("unchecked")
 	private List<String[]> getConditionClasses(AnnotatedTypeMetadata metadata) {
+		//查找Conditional注解
 		MultiValueMap<String, Object> attributes = metadata.getAllAnnotationAttributes(Conditional.class.getName(), true);
 		Object values = (attributes != null ? attributes.get("value") : null);
 		return (List<String[]>) (values != null ? values : Collections.emptyList());
