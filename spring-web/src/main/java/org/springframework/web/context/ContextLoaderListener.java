@@ -33,6 +33,17 @@ import javax.servlet.ServletContextListener;
  * @since 17.02.2003
  * @see #setContextInitializers
  * @see org.springframework.web.WebApplicationInitializer
+ *
+ *
+ * ContextLoaderListener通过实现ServletContextListener接口，将spring容器融入web容器当中。这个可以分两个角度来理解：
+ * web项目自身：接收web容器启动web应用的通知，开始自身配置的解析加载，创建bean实例，通过一个WebApplicationContext来维护spring项目的主容器相关的bean，以及其他一些组件。
+ * web容器：web容器使用ServletContext来维护每一个web应用，ContextLoaderListener将spring容器，即WebApplicationContext，
+ * 作为ServletContext的一个attribute，key为，保存在ServletContext中，从而web容器和spring项目可以通过ServletContext来交互。
+ *
+ * ContextLoaderListener监听器的作用就是启动Web容器时，自动装配ApplicationContext的配置信息。
+ * 因为它实现了ServletContextListener这个接口，在web.xml配置了这个监听器，启动容器时，就会默认执行它实现的contextInitialized()方法初始化WebApplicationContext实例（XmlWebApplicationContext），并放入到ServletContext中。由于在ContextLoaderListener中关联了ContextLoader这个类，所以整个加载配置过程由ContextLoader来完成。
+ * 如果web.xml中加入了ContextLoaderListener则初始化SpringIOC容器，即root ApplicationContext，springmvc维护一个子容器，
+ * 通过DispachterServlet来初始化，并通过parent变量持有父容器的引用
  */
 public class ContextLoaderListener extends ContextLoader implements ServletContextListener {
 
@@ -97,6 +108,8 @@ public class ContextLoaderListener extends ContextLoader implements ServletConte
 
 	/**
 	 * Initialize the root web application context.
+	 * 监听servlet容器的启动
+	 * 作为一个中间层来建立spring容器和web容器的关联关系
 	 */
 	@Override
 	public void contextInitialized(ServletContextEvent event) {

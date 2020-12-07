@@ -40,4 +40,5 @@ include 'luban'
 include 'luban-aop'
 include 'luban-spring-beanDefinition'
 include 'luban-transaction'
+include 'mvc-test'
 

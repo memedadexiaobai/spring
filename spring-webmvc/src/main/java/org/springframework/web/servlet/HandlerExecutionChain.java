@@ -43,11 +43,11 @@ public class HandlerExecutionChain {
 
 	private final Object handler;
 
-	@Nullable
+	@Nullable //粗放的xml配置的拦截器 <mvc:interceptor>
 	private HandlerInterceptor[] interceptors;
 
 	@Nullable
-	private List<HandlerInterceptor> interceptorList;
+	private List<HandlerInterceptor> interceptorList; //默认拦截器
 
 	private int interceptorIndex = -1;
 
