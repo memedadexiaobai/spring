@@ -185,11 +185,12 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 						logger.trace("Could not resolve type for bean '" + beanName + "'", ex);
 					}
 				}
-				if (beanType != null && isHandler(beanType)) {
+				if (beanType != null && isHandler(beanType)) { //类型添加了Controller 或者 RequestMapping注解
 					detectHandlerMethods(beanName);
 				}
 			}
 		}
+		//日志记录HandlerMethods的总数量
 		handlerMethodsInitialized(getHandlerMethods());
 	}
 

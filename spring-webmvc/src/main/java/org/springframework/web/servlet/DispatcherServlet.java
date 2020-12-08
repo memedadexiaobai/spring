@@ -594,20 +594,23 @@ public class DispatcherServlet extends FrameworkServlet {
 	private void initHandlerMappings(ApplicationContext context) {
 		this.handlerMappings = null;
 
+		//默认为true，可通过DispatcherServlet的init-param参数进行设置
 		if (this.detectAllHandlerMappings) {
 			// Find all HandlerMappings in the ApplicationContext, including ancestor contexts. 也会从父容器中获取bean
+			//在ApplicationContext中找到所有的handlerMapping, 包括父级上下文
 			Map<String, HandlerMapping> matchingBeans =
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerMapping.class, true, false);
 			if (!matchingBeans.isEmpty()) {
 				this.handlerMappings = new ArrayList<>(matchingBeans.values());
-				// We keep HandlerMappings in sorted order.
+				// We keep HandlerMappings in sorted order.    排序，可通过指定order属性进行设置，order的值为int型，数越小优先级越高
 				AnnotationAwareOrderComparator.sort(this.handlerMappings);
 			}
 		}
 		else {
 			try {
-				//handlerMapping
+				//  //从ApplicationContext中取id（或name）="handlerMapping"的bean,此时为空
 				HandlerMapping hm = context.getBean(HANDLER_MAPPING_BEAN_NAME, HandlerMapping.class);
+				// 将hm转换成list，并赋值给属性handlerMappings
 				this.handlerMappings = Collections.singletonList(hm);
 			}
 			catch (NoSuchBeanDefinitionException ex) {
@@ -619,6 +622,10 @@ public class DispatcherServlet extends FrameworkServlet {
 		// a default HandlerMapping if no other mappings are found.
 		if (this.handlerMappings == null) {
 			//这个时候从DispatcherServlet.properties文件中读取 SPI机制
+			//如果没有自定义则使用默认的handlerMappings
+			//默认的HandlerMapping在DispatcherServlet.properties属性文件中定义，
+			// 该文件是在DispatcherServlet的static静态代码块中加载的
+			// 默认的是：BeanNameUrlHandlerMapping和RequestMappingHandlerMapping
 			this.handlerMappings = getDefaultStrategies(context, HandlerMapping.class);
 			if (logger.isTraceEnabled()) {
 				logger.trace("No HandlerMappings declared for servlet '" + getServletName() +
@@ -862,6 +869,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	@SuppressWarnings("unchecked")
 	protected <T> List<T> getDefaultStrategies(ApplicationContext context, Class<T> strategyInterface) {
 		String key = strategyInterface.getName();
+		//获取HandlerMappings为key的value值,defaultStrategies在static块中读取DispatcherServlet.properties
 		String value = defaultStrategies.getProperty(key);
 		if (value != null) {
 			String[] classNames = StringUtils.commaDelimitedListToStringArray(value);
@@ -869,6 +877,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			for (String className : classNames) {
 				try {
 					Class<?> clazz = ClassUtils.forName(className, DispatcherServlet.class.getClassLoader());
+					//通过容器创建bean 触发后置处理器
 					Object strategy = createDefaultStrategy(context, clazz);
 					strategies.add((T) strategy);
 				}

@@ -508,6 +508,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 		@Override
 		@SuppressWarnings("deprecation")
 		public RequestMappingInfo build() {
+			//再次封装成对应的对象    面向对象编程  每一个属性都存在多个值得情况需要排重封装
 			ContentNegotiationManager manager = this.options.getContentNegotiationManager();
 
 			PatternsRequestCondition patternsCondition = new PatternsRequestCondition(

@@ -59,6 +59,10 @@ import org.springframework.web.server.ServerWebExchange;
  * @author Rossen Stoyanchev
  * @author Sam Brannen
  * @since 5.0
+ *
+ * 处理注解@RequestMapping及@Controller
+ * • 实现InitializingBean接口，增加了bean初始化的能力，也就是说在bean初始化时可以做一些控制
+ * • 实现EmbeddedValueResolverAware接口，即增加了读取属性文件的能力
  */
 public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMapping
 		implements EmbeddedValueResolverAware {

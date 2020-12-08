@@ -55,9 +55,13 @@ import org.springframework.util.CollectionUtils;
  * @see #setMappings
  * @see #setUrlMap
  * @see BeanNameUrlHandlerMapping
+ *
+ * SimpleUrlHandlerMapping类主要接收用户设定的url与handler的映射关系，其实际的工作都是交由其父类来完成的
+ * • AbstractHandlerMapping
+ * 在创建初始化SimpleUrlHandlerMapping类时，调用其父类的initApplicationContext()方法，该方法完成拦截器的初始化
  */
 public class SimpleUrlHandlerMapping extends AbstractUrlHandlerMapping {
-
+	// 存储url和bean映射
 	private final Map<String, Object> urlMap = new LinkedHashMap<>();
 
 
@@ -101,6 +105,7 @@ public class SimpleUrlHandlerMapping extends AbstractUrlHandlerMapping {
 	 * @param mappings properties with URLs as keys and bean names as values
 	 * @see #setUrlMap
 	 */
+	// 注入property的name为mappings映射
 	public void setMappings(Properties mappings) {
 		CollectionUtils.mergePropertiesIntoMap(mappings, this.urlMap);
 	}
@@ -113,6 +118,7 @@ public class SimpleUrlHandlerMapping extends AbstractUrlHandlerMapping {
 	 * @param urlMap map with URLs as keys and beans as values
 	 * @see #setMappings
 	 */
+	// 注入property的name为urlMap映射
 	public void setUrlMap(Map<String, ?> urlMap) {
 		this.urlMap.putAll(urlMap);
 	}
@@ -133,9 +139,11 @@ public class SimpleUrlHandlerMapping extends AbstractUrlHandlerMapping {
 	 * Calls the {@link #registerHandlers} method in addition to the
 	 * superclass's initialization.
 	 */
-	@Override
+	@Override     // 实例化本类实例入口
 	public void initApplicationContext() throws BeansException {
+		// 调用父类AbstractHandlerMapping的initApplicationContext方法，只要完成拦截器的注册
 		super.initApplicationContext();
+		// 处理url和bean name，具体注册调用父类完成
 		registerHandlers(this.urlMap);
 	}
 
@@ -145,6 +153,7 @@ public class SimpleUrlHandlerMapping extends AbstractUrlHandlerMapping {
 	 * @throws BeansException if a handler couldn't be registered
 	 * @throws IllegalStateException if there is a conflicting handler registered
 	 */
+	// 注册映射关系，及将property中的值解析到map对象中，key为url，value为bean id或name
 	protected void registerHandlers(Map<String, Object> urlMap) throws BeansException {
 		if (urlMap.isEmpty()) {
 			logger.trace("No patterns in " + formatMappingName());
@@ -152,13 +161,15 @@ public class SimpleUrlHandlerMapping extends AbstractUrlHandlerMapping {
 		else {
 			urlMap.forEach((url, handler) -> {
 				// Prepend with slash if not already present.
+				// 增加以"/"开头
 				if (!url.startsWith("/")) {
 					url = "/" + url;
 				}
-				// Remove whitespace from handler bean name.
+				// Remove whitespace from handler bean name.                 // 去除handler bean名称的空格
 				if (handler instanceof String) {
 					handler = ((String) handler).trim();
 				}
+				// 调用父类AbstractUrlHandlerMapping完成映射
 				registerHandler(url, handler);
 			});
 			if (logger.isDebugEnabled()) {

@@ -85,7 +85,7 @@ public interface HandlerMapping {
 
 
 	/**
-	 * Return a handler for this request.
+	 * Return a handler for this request. 返回请求的一个处理程序handler和拦截器interceptors
 	 * @param exchange current server exchange
 	 * @return a {@link Mono} that emits one value or none in case the request
 	 * cannot be resolved to a handler

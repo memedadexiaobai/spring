@@ -333,15 +333,20 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 		Assert.notNull(handler, "Handler object must not be null");
 		Object resolvedHandler = handler;
 
+		// 不是懒加载，默认为false，即不是，通过配置SimpleUrlHandlerMapping属性lazyInitHandlers的值进行控制
+		// 如果不是懒加载并且handler为单例，即从上下文中查询实例处理，此时resolvedHandler为handler实例对象；
+		// 如果是懒加载或者handler不是单例，即resolvedHandler为handler逻辑名
 		// Eagerly resolve handler if referencing singleton via name.
 		if (!this.lazyInitHandlers && handler instanceof String) {
 			String handlerName = (String) handler;
 			ApplicationContext applicationContext = obtainApplicationContext();
+			// 如果handler是单例，通过bean的scope控制
 			if (applicationContext.isSingleton(handlerName)) {
 				resolvedHandler = applicationContext.getBean(handlerName);
 			}
 		}
 
+		//已存在且指向不同的Handler抛异常
 		Object mappedHandler = this.handlerMap.get(urlPath);
 		if (mappedHandler != null) {
 			if (mappedHandler != resolvedHandler) {
@@ -355,16 +360,17 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 				if (logger.isTraceEnabled()) {
 					logger.trace("Root mapping to " + getHandlerDescription(handler));
 				}
-				setRootHandler(resolvedHandler);
+				setRootHandler(resolvedHandler);//设置根处理器，即请求/的时候
 			}
 			else if (urlPath.equals("/*")) {
 				if (logger.isTraceEnabled()) {
 					logger.trace("Default mapping to " + getHandlerDescription(handler));
 				}
-				setDefaultHandler(resolvedHandler);
+				setDefaultHandler(resolvedHandler);//默认处理器
 			}
 			else {
-				this.handlerMap.put(urlPath, resolvedHandler);
+				// 把url与handler（名称或实例）放入map，以供后续使用
+				this.handlerMap.put(urlPath, resolvedHandler);//注册进map
 				if (logger.isTraceEnabled()) {
 					logger.trace("Mapped [" + urlPath + "] onto " + getHandlerDescription(handler));
 				}

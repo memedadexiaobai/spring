@@ -75,6 +75,14 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMappi
  * @author Rossen Stoyanchev
  * @author Sam Brannen
  * @since 3.1
+ *
+ * 处理注解@RequestMapping及@Controller
+ * • 实现InitializingBean接口，增加了bean初始化的能力，也就是说在bean初始化时可以做一些控制
+ * • 实现EmbeddedValueResolverAware接口，即增加了读取属性文件的能力
+ *
+ * 处理器bean的id/name为一个url请求路径，前面有"/"；
+ * 如果多个url映射同一个处理器bean，那么就需要定义多个bean，导致容器创建多个处理器实例，占用内存空间；
+ * 处理器bean定义与url请求耦合在一起。
  */
 public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMapping
 		implements MatchableHandlerMapping, EmbeddedValueResolverAware {
@@ -252,15 +260,17 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * @see #getCustomTypeCondition(Class)
 	 */
 	@Override
-	@Nullable
+	@Nullable //requestMapping封装成RequestMappingInfo对象
 	protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
-		RequestMappingInfo info = createRequestMappingInfo(method);
+		RequestMappingInfo info = createRequestMappingInfo(method); //解析方法上的requestMapping
 		if (info != null) {
+			//解析方法所在类上的requestMapping
 			RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
 			if (typeInfo != null) {
+				//合并类和方法上的路径,比如Controller类上有@RequestMapping("/demo")，方法的@RequestMapping("/demo1")，结果为"/demo/demo1"
 				info = typeInfo.combine(info);
 			}
-			String prefix = getPathPrefix(handlerType);
+			String prefix = getPathPrefix(handlerType);//合并前缀
 			if (prefix != null) {
 				info = RequestMappingInfo.paths(prefix).options(this.config).build().combine(info);
 			}
@@ -291,7 +301,9 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 */
 	@Nullable
 	private RequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
+		//找到方法上的RequestMapping注解
 		RequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(element, RequestMapping.class);
+		//获取自定义的类型条件(自定义的RequestMapping注解)
 		RequestCondition<?> condition = (element instanceof Class ?
 				getCustomTypeCondition((Class<?>) element) : getCustomMethodCondition((Method) element));
 		return (requestMapping != null ? createRequestMappingInfo(requestMapping, condition) : null);
@@ -337,7 +349,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 */
 	protected RequestMappingInfo createRequestMappingInfo(
 			RequestMapping requestMapping, @Nullable RequestCondition<?> customCondition) {
-
+		//获取RequestMapping注解的属性,封装成RequestMappingInfo对象
 		RequestMappingInfo.Builder builder = RequestMappingInfo
 				.paths(resolveEmbeddedValuesInPatterns(requestMapping.path()))
 				.methods(requestMapping.method())
