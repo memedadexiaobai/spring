@@ -36,6 +36,8 @@ import org.springframework.web.servlet.ModelAndView;
  * @see Controller
  * @see LastModified
  * @see HttpRequestHandlerAdapter
+ *
+ * 是Controller实现类的适配器类，其本质是执行Controller中的handleRequest方法
  */
 public class SimpleControllerHandlerAdapter implements HandlerAdapter {
 

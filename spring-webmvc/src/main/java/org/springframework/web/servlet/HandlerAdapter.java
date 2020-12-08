@@ -46,6 +46,17 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @see org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter
  * @see org.springframework.web.servlet.handler.SimpleServletHandlerAdapter
+ *
+ *
+ * Spring MVC为我们提供了多种处理用户的处理器（Handler），Spring实现的处理器类型有Servlet、Controller、HttpRequestHandler以及注解类型的处理器，
+ * 即我们可以通过实现这些接口或者注解我们的类来使用这些处理器，那么针对不同类型的处理器，如何将用户请求转发到相应类型的处理器方法中的呢，
+ * 这就需求Spring MVC的处理器适配器来完成适配操作，这就是处理器适配器要完成的工作。
+ * • SimpleServletHandlerAdapter 适配Servlet处理器
+ * • HttpRequestHandlerAdapter 适配HttpRequestHandler处理器
+ * • RequestMappingHandlerAdapter 适配注解处理器
+ * • SimpleControllerHandlerAdapter 适配Controller处理器
+ * Spring MVC默认使用的处理器适配器为：HttpRequestHandlerAdapter、SimpleServletHandlerAdapter、RequestMappingHandlerAdapter三种。
+ * 与initHandlerMappings的处理一致，读取DispatcherServlet.properties中的HandlerAdapters，但不是通过后置处理器触发
  */
 public interface HandlerAdapter {
 
@@ -59,6 +70,7 @@ public interface HandlerAdapter {
 	 * }
 	 * @param handler handler object to check
 	 * @return whether or not this object can use the given handler
+	 * 判断适配器是否适配Handler
 	 */
 	boolean supports(Object handler);
 
@@ -74,7 +86,7 @@ public interface HandlerAdapter {
 	 * @return a ModelAndView object with the name of the view and the required
 	 * model data, or {@code null} if the request has been handled directly
 	 */
-	@Nullable
+	@Nullable //使用适配的Handler处理用户请求
 	ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception;
 
 	/**
@@ -86,6 +98,7 @@ public interface HandlerAdapter {
 	 * @see javax.servlet.http.HttpServlet#getLastModified
 	 * @see org.springframework.web.servlet.mvc.LastModified#getLastModified
 	 */
+	//返回资源的最后修改时间，如果handler实现类不支持可以返回-1
 	long getLastModified(HttpServletRequest request, Object handler);
 
 }

@@ -643,6 +643,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		this.handlerAdapters = null;
 
 		if (this.detectAllHandlerAdapters) {
+			// 从应用上下文中查找HandlerAdapter
 			// Find all HandlerAdapters in the ApplicationContext, including ancestor contexts.
 			Map<String, HandlerAdapter> matchingBeans =
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerAdapter.class, true, false);
@@ -654,6 +655,8 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 		else {
 			try {
+				//如果在web.xml配了detectAllHandlerAdapters=false，此时spring会加载名称为handlerAdapter的bean为处理器适配器
+				// 转化为集合赋给handlerAdapters属性
 				HandlerAdapter ha = context.getBean(HANDLER_ADAPTER_BEAN_NAME, HandlerAdapter.class);
 				this.handlerAdapters = Collections.singletonList(ha);
 			}
@@ -664,6 +667,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		// Ensure we have at least some HandlerAdapters, by registering
 		// default HandlerAdapters if no other adapters are found.
+		//如果未配置，读取DispatcherServlet.properties中的HandlerAdapters,放入this.handlerAdapters
 		if (this.handlerAdapters == null) {
 			this.handlerAdapters = getDefaultStrategies(context, HandlerAdapter.class);
 			if (logger.isTraceEnabled()) {

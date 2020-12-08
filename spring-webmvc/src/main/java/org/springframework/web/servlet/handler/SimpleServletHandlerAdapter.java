@@ -51,6 +51,10 @@ import org.springframework.web.servlet.ModelAndView;
  * @see javax.servlet.http.HttpServlet
  * @see SimpleServletPostProcessor
  * @see org.springframework.web.servlet.mvc.ServletWrappingController
+ *
+ * SimpleSerlvetHandlerAdapter是Spring使用HandlerAdapter最简单的方式，此方式是为了在Spring中支持Servlet方式开发，即把Servlet适配为处理器handler。
+ * 是一个Servlet的适配器，其最终执行的方法是Servlet的service方法，非默认提供（DispatcherServlet.properties中没有）
+ * 需要自己导入bean
  */
 public class SimpleServletHandlerAdapter implements HandlerAdapter {
 
