@@ -161,7 +161,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	// 标记BeanFactory中是否有DestructionAwareBeanPostProcessor
 	private volatile boolean hasDestructionAwareBeanPostProcessors;
 
-	/** Map from scope identifier String to corresponding Scope. */
+	/** Map from scope identifier String to corresponding(一致的) Scope. */
 	private final Map<String, Scope> scopes = new LinkedHashMap<>(8);
 
 	/** Security context used when running with a SecurityManager. */
@@ -296,7 +296,6 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			// 创建Bean
-
 			if (!typeCheckOnly) { //alreadyCreated 添加 beanName 对应的bean   mergedBeanDefinitions如果包含对应的bean 则将其属性 stale 置为true 表示旧的
 				markBeanAsCreated(beanName);
 			}
@@ -554,7 +553,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					return typeToMatch.isInstance(beanInstance);
 				}
 			}
-			else if (!isFactoryDereference) {
+			else if (!isFactoryDereference) { //不是FactoryBean
 				// 如果beanInstance就是普通的bean
 				// 如果beanInstance是typeToMatch的一个实例，可以是typeToMatch子类的一个实例
 				if (typeToMatch.isInstance(beanInstance)) {
@@ -1668,7 +1667,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @param mbd the corresponding bean definition
 	 */
 	protected boolean isFactoryBean(String beanName, RootBeanDefinition mbd) {
-		// isFactoryBean起到了缓存作用，对于一个FactroyBean，一开始这个熟悉是null，下面就会进行类型推导，判断出来是FactoryBean之后，就记录在这个属性中
+		// isFactoryBean起到了缓存作用，对于一个FactroyBean，一开始这个属性是null，下面就会进行类型推导，判断出来是FactoryBean之后，就记录在这个属性中
 		Boolean result = mbd.isFactoryBean;
 		if (result == null) {
 			Class<?> beanType = predictBeanType(beanName, mbd, FactoryBean.class);
@@ -1853,7 +1852,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected Object getObjectForBeanInstance(
 			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
 
-		// Don't let calling code try to dereference the factory if the bean isn't a factory.
+		// Don't let calling code try to dereference the factory if the bean isn't a factory.  beanInstance 是从单例池取出来的
 		// 如果是&lubanFactoryBean，那么则直接返回单例池（SingletonObjects）中的对象
 		if (BeanFactoryUtils.isFactoryDereference(name)) {
 			if (beanInstance instanceof NullBean) {

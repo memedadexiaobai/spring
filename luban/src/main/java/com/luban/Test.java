@@ -20,8 +20,8 @@ public class Test {
 		//2.
 //		Thread.currentThread().setContextClassLoader();
 
-//		applicationContext.getBean("UserService.class");
-//		UserService userService = applicationContext.getBean(UserService.class);
+		applicationContext.getBean("UserService.class");
+		UserService userService = applicationContext.getBean(UserService.class);
 //		userService.test();
 
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(UserService.class);

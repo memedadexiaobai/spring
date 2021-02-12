@@ -92,7 +92,8 @@ class ConditionEvaluator {
 
 		List<Condition> conditions = new ArrayList<>();
 		//获取类中的Conditional注解
-		//Conditional 注解 只有一个value属性 Class<? extends Condition>[] value();   value中的元素相当于对 Conditional 的解析 也就是符合那种情况  这种存在
+		//Conditional 注解 只有一个value属性 Class<? extends Condition>[] value();
+		// value中的元素相当于对 Conditional 的解析 也就是符合那种情况  这种存在
 		//存在value里边是多个值的情况
 		for (String[] conditionClasses : getConditionClasses(metadata)) {  //先获取该类中标了Conditional注解的所有类
 			for (String conditionClass : conditionClasses) { //遍历value中的多个类

@@ -31,7 +31,7 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 /**
- * A subclass of {@code WebMvcConfigurationSupport} that detects and delegates
+ * A subclass of {@code WebMvcConfigurationSupport} that detects(查出) and delegates(委派)
  * to all beans of type {@link WebMvcConfigurer} allowing them to customize the
  * configuration provided by {@code WebMvcConfigurationSupport}. This is the
  * class actually imported by {@link EnableWebMvc @EnableWebMvc}.

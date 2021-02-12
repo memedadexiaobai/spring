@@ -276,7 +276,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 		for (String basePackage : basePackages) {
-			// 扫描包路径得到BeanDefinition，得到的BeanDefinition是空的，还没有解析类上所定义的注解信息
+			// 扫描包路径得到BeanDefinition，得到的BeanDefinition是空的，还没有解析类上所定义的注解信息  扫描得到的类型是ScannedGenericBeanDefinition
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 			for (BeanDefinition candidate : candidates) {
 				// 得到Scope的信息，并设置

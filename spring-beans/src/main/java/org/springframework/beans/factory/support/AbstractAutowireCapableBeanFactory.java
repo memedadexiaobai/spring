@@ -135,7 +135,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	private boolean allowCircularReferences = true;
 
 	/**
-	 * Whether to resort to injecting a raw bean instance in case of circular reference,
+	 * Whether to resort to(依靠) injecting a raw bean instance in case of circular reference,
 	 * even if the injected bean eventually got wrapped.
 	 */
 	private boolean allowRawInjectionDespiteWrapping = false;
@@ -633,7 +633,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		}
 
-		if (earlySingletonExposure) {
+		if (earlySingletonExposure) { //此时bean已经暴露出来给外界
 			// 在解决循环依赖时，当AService的属性注入完了之后，从getSingleton中得到AService AOP之后的代理对象
 			Object earlySingletonReference = getSingleton(beanName, false);  // earlySingletonObjects
 			if (earlySingletonReference != null) {
@@ -643,12 +643,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					exposedObject = earlySingletonReference;
 			}
 				// 如果提前暴露的对象和经过了完整的生命周期后的对象不相等
-				// allowRawInjectionDespiteWrapping表示在循环依赖时，只能
+				// allowRawInjectionDespiteWrapping表示在循环依赖时，是否允许注入原生的bean来防止循环依赖 默认false
+				// beanName的bean是否被人依赖
+				//这么理解 默认不允许注入原始的对象给其他bean使用，如果存在这种情况且bean已经创建完成则直接移除这个bean重新创建 否则报错BeanCurrentlyInCreationException
 				else if (!this.allowRawInjectionDespiteWrapping && hasDependentBean(beanName)) {
-					String[] dependentBeans = getDependentBeans(beanName);
+					String[] dependentBeans = getDependentBeans(beanName); //返回所有依赖beanName这个bean的bean名称
 					Set<String> actualDependentBeans = new LinkedHashSet<>(dependentBeans.length);
 					for (String dependentBean : dependentBeans) {
-						if (!removeSingletonIfCreatedForTypeCheckOnly(dependentBean)) {
+						//如果alreadyCreated不包含dependentBean返回false 判断为true
+						if (!removeSingletonIfCreatedForTypeCheckOnly(dependentBean)) { //如果alreadyCreated包含dependentBean就移除这个bean
 							actualDependentBeans.add(dependentBean);
 						}
 					}
@@ -1204,7 +1207,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see #autowireConstructor
 	 * @see #instantiateBean
 	 */
-	protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd, @Nullable Object[] args) {
+	protected BeanWrapper  createBeanInstance(String beanName, RootBeanDefinition mbd, @Nullable Object[] args) {
 		// 创建一个bean实例(返回一个原始对象)
 
 		// Make sure bean class is actually resolved at this point.
@@ -1250,7 +1253,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 		if (resolved) {
 			// resolved为true，表示当前bean的构造方法已经确定出来了
-			// autowireNecessary表示
+			// autowireNecessary表示是否已经决定了要使用的构造方法参数
 			if (autowireNecessary) {
 				return autowireConstructor(beanName, mbd, null, null);
 			}
@@ -1650,7 +1653,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 属性有set方法，并且
 			// 没有通过DependencyCheck排除，并且
 			// 没有在BeanDefinition中给该属性赋值，并且
-			// 属性的类型不是简单类型
+			// 属性的类型不是简单类型 不能是Set Object这种
 			if (pd.getWriteMethod() != null && !isExcludedFromDependencyCheck(pd) && !pvs.contains(pd.getName()) &&
 					!BeanUtils.isSimpleProperty(pd.getPropertyType())) {
 				result.add(pd.getName());

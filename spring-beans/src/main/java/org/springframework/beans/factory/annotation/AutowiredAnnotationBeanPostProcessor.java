@@ -322,7 +322,8 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 					// candidates 就是用来存储所有被筛选出来的构造方法,其实可以认为, 就是把所有@Autowired注解标注的方法放到里面, 但是还多放了一个默认构造方法
 					List<Constructor<?>> candidates = new ArrayList<>(rawCandidates.length);
-					// requiredConstructor表示@Autowired标注并且required为true的构造方法, 因为只允许出现一个这样的构造方法, 所以当这个变量存在值后, 又出现了一个相同情况的构造方法的话, Spring就会抛出一个错误
+					// requiredConstructor表示@Autowired标注并且required为true的构造方法, 因为只允许出现一个这样的构造方法,
+					// 所以当这个变量存在值后, 又出现了一个相同情况的构造方法的话, Spring就会抛出一个错误
 					Constructor<?> requiredConstructor = null;
 					// defaultConstructor用来保存默认构造方法
 					Constructor<?> defaultConstructor = null;
@@ -361,7 +362,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 						// 如果构造方法上存在@Autowired注解
 						if (ann != null) {
 							// requiredConstructor表示程序员手动指明的要使用的哪个构造方法
-							// 所以如果有多个构造方法上都写了@Autowired注解就会报错，required位true的情况下
+							// 所以如果有多个构造方法上都写了@Autowired注解就会报错，required为true的情况下
 							// 因为作为程序员你如果告诉Spring多个构造方法，那Spring也就不知道到底要使用哪一个了
 							if (requiredConstructor != null) {
 								throw new BeanCreationException(beanName,
@@ -518,7 +519,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 	private InjectionMetadata buildAutowiringMetadata(final Class<?> clazz) {
 
-		// 判断是不是候选者类，比如说类名，如果是以"java."开头的则不是候选者类
+		// 判断是不是候选者类，比如说类名，如果是以"java."开头的则不是候选者类  并且是否有注解@Autowired @Inject @Value
 		if (!AnnotationUtils.isCandidateClass(clazz, this.autowiredAnnotationTypes)) {
 			return InjectionMetadata.EMPTY;
 		}

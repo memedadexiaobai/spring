@@ -67,8 +67,7 @@ final class PostProcessorRegistrationDelegate {
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				// BeanDefinitionRegistryPostProcessor是一个特殊的BeanFactoryPostProcessor，需要先执行postProcessBeanDefinitionRegistry方法
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
-					BeanDefinitionRegistryPostProcessor registryProcessor =
-							(BeanDefinitionRegistryPostProcessor) postProcessor;
+					BeanDefinitionRegistryPostProcessor registryProcessor =	(BeanDefinitionRegistryPostProcessor) postProcessor;
 
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
 
@@ -241,6 +240,7 @@ final class PostProcessorRegistrationDelegate {
 		beanFactory.clearMetadataCache();
 	}
 
+	//相当于对所有的BeanPostProcessors做了个排序，BeanPostProcessorChecker在第一个，ApplicationListenerDetector在最后一位
 	public static void registerBeanPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext) {
 
@@ -250,8 +250,10 @@ final class PostProcessorRegistrationDelegate {
 		// Register BeanPostProcessorChecker that logs an info message when
 		// a bean is created during BeanPostProcessor instantiation, i.e. when
 		// a bean is not eligible for getting processed by all BeanPostProcessors.
-		int beanProcessorTargetCount = beanFactory.getBeanPostProcessorCount() + 1 + postProcessorNames.length;
-		beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount));
+		//ApplicationContextAwareProcessor + ApplicationListenerDetector + ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor 3个
+		//internalAutowiredAnnotationProcessor + internalCommonAnnotationProcessor 2个
+		int beanProcessorTargetCount = beanFactory.getBeanPostProcessorCount() + 1 + postProcessorNames.length; //3个 + 1个代表BeanPostProcessorChecker + 2个
+		beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount)); //
 
 		// Separate between BeanPostProcessors that implement PriorityOrdered,
 		// Ordered, and the rest.

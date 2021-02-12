@@ -921,8 +921,9 @@ public class DispatcherServlet extends FrameworkServlet {
 	/**
 	 * Exposes the DispatcherServlet-specific request attributes and delegates to {@link #doDispatch}
 	 * for the actual dispatching.
+	 *
 	 * 从FrameworkServlet中获取WebApplicationContext，然后从WebApplicationContext中获取DispatcherServlet的相关功能子组件bean，
-	 * 然后在自身维护一个引用。实现doService方法并使用这些功能子组件来完成请求的处理和生成响应。
+	 * 然后在自身维护一个引用。实现 doService 方法并使用这些功能子组件来完成请求的处理和生成响应。
 	 */
 	@Override
 	protected void doService(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -931,7 +932,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		// Keep a snapshot of the request attributes in case of an include,
 		// to be able to restore the original attributes after the include.
 		Map<String, Object> attributesSnapshot = null;
-		if (WebUtils.isIncludeRequest(request)) {
+		if (WebUtils.isIncludeRequest(request)) {//javax.servlet.include.request_uri 属性不等于null
 			attributesSnapshot = new HashMap<>();
 			Enumeration<?> attrNames = request.getAttributeNames();//保存request域中的数据,存一份快照
 			while (attrNames.hasMoreElements()) {

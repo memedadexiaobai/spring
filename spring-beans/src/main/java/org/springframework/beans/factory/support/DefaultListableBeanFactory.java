@@ -531,11 +531,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					if (!mbd.isAbstract() &&
 							(allowEagerInit ||	(mbd.hasBeanClass() || !mbd.isLazyInit() || isAllowEagerClassLoading())
 									&& !requiresEagerInitForType(mbd.getFactoryBeanName()))) {
-						boolean isFactoryBean = isFactoryBean(beanName, mbd);  //这里边会实例化 BeanDefinition 里边的 beanClass对应的类
+						boolean isFactoryBean = isFactoryBean(beanName, mbd);  //这里边会加载 BeanDefinition 里边的 beanClass对应的类
 						BeanDefinitionHolder dbd = mbd.getDecoratedDefinition();
 						boolean matchFound = false;
 
-						boolean allowFactoryBeanInit = allowEagerInit || containsSingleton(beanName);
+						boolean allowFactoryBeanInit = allowEagerInit || containsSingleton(beanName); //是否单例对象
 						boolean isNonLazyDecorated = dbd != null && !mbd.isLazyInit();
 						if (!isFactoryBean) {
 							// 包括非单例，则直接匹配
@@ -994,7 +994,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {
-			//判断是否已经在bean的创建过程中  alreadyCreated
+			//判断是否已经在bean的创建过程中  alreadyCreated  !alreadyCreated.isEmpty()
 			if (hasBeanCreationStarted()) {
 				// Cannot modify startup-time collection elements anymore (for stable iteration)
 				synchronized (this.beanDefinitionMap) {
@@ -1182,12 +1182,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			ResolvableType requiredType, @Nullable Object[] args, boolean nonUniqueAsNull) throws BeansException {
 
 		Assert.notNull(requiredType, "Required type must not be null");
-		//获取到给定类型对应的不同的 BeanName
+		//获取到给定类型对应的不同的 BeanName  可能找到多个
 		String[] candidateNames = getBeanNamesForType(requiredType);
 
 		if (candidateNames.length > 1) {
 			List<String> autowireCandidates = new ArrayList<>(candidateNames.length);
 			for (String beanName : candidateNames) {
+				//如果不在beanDefinitionMap中 或者 是自动注入的候选者
 				if (!containsBeanDefinition(beanName) || getBeanDefinition(beanName).isAutowireCandidate()) {
 					autowireCandidates.add(beanName);
 				}
@@ -1217,7 +1218,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 			//根据 @Primary 注解判断使用哪个bean
 			String candidateName = determinePrimaryCandidate(candidates, requiredType.toClass());
-			if (candidateName == null) {
+			if (candidateName == null) {  //如果所有的都没有@Primary注解
 				// 根据 Priority 优先级进行判断 数字小 优先级高
 				candidateName = determineHighestPriorityCandidate(candidates, requiredType.toClass());
 			}

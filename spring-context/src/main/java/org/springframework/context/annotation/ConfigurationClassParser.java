@@ -295,7 +295,7 @@ class ConfigurationClassParser {
 			for (AnnotationAttributes componentScan : componentScans) {
 
 				// The config class is annotated with @ComponentScan -> perform the scan immediately
-				// 扫描得到BeanDefinition
+				// 扫描得到BeanDefinition  ComponentScanAnnotationParser
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
 						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
 
@@ -315,7 +315,7 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @Import annotations
-		// 4. 解析@Import，getImports方法返回AppConfig.class上定义的Import注解中所导入的类的信息
+		// 4. 解析@Import，getImports方法返回AppConfig.class上定义的Import注解中所导入的类的信息 这个并没有进行解析 只是加入到了配置类的属性中
 		processImports(configClass, sourceClass, getImports(sourceClass), true);
 
 		// Process any @ImportResource annotations
@@ -388,7 +388,7 @@ class ConfigurationClassParser {
 						processConfigurationClass(candidate.asConfigClass(configClass));
 					}
 					finally {
-						this.importStack.pop();
+						this.importStack.pop(); //移除第一个元素 也就是本元素
 					}
 				}
 			}

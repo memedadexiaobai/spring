@@ -29,7 +29,7 @@ import org.springframework.util.ObjectUtils;
  * override of a method by the IoC container.
  *
  * <p>Any non-final method can be overridden, irrespective of its
- * parameters and return types.
+ * parameters and return types.  任何非final方法都可以被重写，不管它是什么参数和返回类型。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller

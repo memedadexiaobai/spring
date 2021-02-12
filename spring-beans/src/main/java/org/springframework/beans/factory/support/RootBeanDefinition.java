@@ -101,10 +101,11 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	boolean constructorArgumentsResolved = false;
 
 	/** Package-visible field for caching fully resolved constructor arguments. */
+	//用于缓存完全解析的构造函数参数。
 	@Nullable
 	Object[] resolvedConstructorArguments;
 
-	/** Package-visible field for caching partly prepared constructor arguments. */
+	/** Package-visible field for caching partly prepared constructor arguments.  用于缓存部分准备好的构造函数参数。*/
 	@Nullable
 	Object[] preparedConstructorArguments;
 
@@ -281,7 +282,8 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	}
 
 	/**
-	 * Return the target definition that is being decorated by this bean definition, if any.
+	 * Return the target definition that is being decorated(修饰) by this bean definition, if any.
+	 * 返回由这个bean定义修饰的目标定义，
 	 */
 	@Nullable
 	public BeanDefinitionHolder getDecoratedDefinition() {
