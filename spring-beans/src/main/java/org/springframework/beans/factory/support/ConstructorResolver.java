@@ -484,7 +484,7 @@ class ConstructorResolver {
 			isStatic = true;
 		}
 
-		Method factoryMethodToUse = null;
+		Method factoryMethodToUse = null;GenericServlet
 		ArgumentsHolder argsHolderToUse = null;
 		Object[] argsToUse = null;
 
@@ -904,6 +904,7 @@ class ConstructorResolver {
 		Object[] resolvedArgs = new Object[argsToResolve.length];
 		for (int argIndex = 0; argIndex < argsToResolve.length; argIndex++) {
 			Object argValue = argsToResolve[argIndex]; // 构造方法参数
+			//这里会根据 executable 类型的不同 生成不同的  MethodParameter  区别是  executable 属性类型不同
 			MethodParameter methodParam = MethodParameter.forExecutable(executable, argIndex);
 			if (argValue == autowiredArgumentMarker) { //如果参数是Object的话
 				argValue = resolveAutowiredArgument(methodParam, beanName, null, converter, fallback);

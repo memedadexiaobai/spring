@@ -582,7 +582,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Allow post-processors to modify the merged bean definition.
 		synchronized (mbd.postProcessingLock) {
-			if (!mbd.postProcessed) {
+			if (!mbd.postProcessed) { //标识是否已经经过了 MergedBeanDefinitionPostProcessor 的处理
 				try {
 					// 运行修改合并好了的BeanDefinition
 					// 这里会查找@Autowired的注入点(InjectedElement)，并把这些注入点添加到mbd的属性externallyManagedConfigMembers中
@@ -638,7 +638,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			Object earlySingletonReference = getSingleton(beanName, false);  // earlySingletonObjects
 			if (earlySingletonReference != null) {
 				// 如果提前暴露的对象和经过了完整的生命周期后的对象相等，则把代理对象赋值给exposedObject
-				// 最终会添加到singletonObjects中去
+				// 最终会添加到singletonObjects中去 exposedObject 是提前暴露出去的对象  bean 是经过完整生命周期的对象
 				if (exposedObject == bean) {
 					exposedObject = earlySingletonReference;
 			}
@@ -1158,14 +1158,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 				Class<?> targetType = determineTargetType(beanName, mbd);
 				if (targetType != null) {
-					// 实例化前  只会走 InstantiationAwareBeanPostProcessor 类型的
+					// 实例化前  只会走 InstantiationAwareBeanPostProcessor 类型的 postProcessBeforeInstantiation
 					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
-					if (bean != null) {  //BeanPostProcessors 所有都会走 当返回不为null时
+					if (bean != null) {  //BeanPostProcessors 所有都会走 当返回不为null时 postProcessAfterInitialization
 						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 					}
 				}
 			}
-			mbd.beforeInstantiationResolved = (bean != null);
+			mbd.beforeInstantiationResolved = (bean != null); //实例化之前被解析
 		}
 		return bean;
 	}

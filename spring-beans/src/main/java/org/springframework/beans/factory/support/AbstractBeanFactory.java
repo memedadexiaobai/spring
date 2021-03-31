@@ -1569,7 +1569,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 		}
 
-		// 获取BeanDefinition中所指定的beanClass属性的值，beanClass属性的类型为Object，可以指定为某个类名
+		// 获取BeanDefinition中所指定的beanClass属性的值，beanClass属性的类型为Object，可以指定为某个类名 xml注入时候写的是String
 		String className = mbd.getBeanClassName(); // 字符串  #{xxx}  采用#可以直接注入对象
 		if (className != null) {
 			// className可以有SpEL,所以需要解析

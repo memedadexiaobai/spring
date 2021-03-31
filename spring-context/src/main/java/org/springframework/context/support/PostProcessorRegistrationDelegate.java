@@ -122,7 +122,8 @@ final class PostProcessorRegistrationDelegate {
 			boolean reiterate = true; //reiterate 重复
 			// 在一个BeanDefinitionRegistryPostProcessor中可以注册另一个BeanDefinitionRegistryPostProcessor，
 			// 所以需要递归找出所有的BeanDefinitionRegistryPostProcessor
-			// 一个没有实现PriorityOrdered接口的BeanDefinitionRegistryPostProcessor如果在内部注册了一个实现了PriorityOrdered接口的BeanDefinitionRegistryPostProcessor，那么就是没有实现PriorityOrdered接口的先执行
+			// 一个没有实现PriorityOrdered接口的BeanDefinitionRegistryPostProcessor
+			//如果在内部注册了一个实现了PriorityOrdered接口的BeanDefinitionRegistryPostProcessor，那么就是没有实现PriorityOrdered接口的先执行
 			while (reiterate) {
 				reiterate = false;
 				// 这里会再一次拿到实现了PriorityOrdered接口或Ordered接口的BeanDefinitionRegistryPostProcessor，所以需要processedBeans进行过滤
@@ -250,8 +251,8 @@ final class PostProcessorRegistrationDelegate {
 		// Register BeanPostProcessorChecker that logs an info message when
 		// a bean is created during BeanPostProcessor instantiation, i.e. when
 		// a bean is not eligible for getting processed by all BeanPostProcessors.
-		//ApplicationContextAwareProcessor + ApplicationListenerDetector + ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor 3个
-		//internalAutowiredAnnotationProcessor + internalCommonAnnotationProcessor 2个
+		//ApplicationContextAwareProcessor + ApplicationListenerDetector + ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor 3个 都是Spring手动加的
+		//internalAutowiredAnnotationProcessor -> AutowiredAnnotationBeanPostProcessor + internalCommonAnnotationProcessor -> CommonAnnotationBeanPostProcessor 2个
 		int beanProcessorTargetCount = beanFactory.getBeanPostProcessorCount() + 1 + postProcessorNames.length; //3个 + 1个代表BeanPostProcessorChecker + 2个
 		beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount)); //
 
@@ -259,6 +260,7 @@ final class PostProcessorRegistrationDelegate {
 		// Ordered, and the rest.
 		List<BeanPostProcessor> priorityOrderedPostProcessors = new ArrayList<>();
 		List<BeanPostProcessor> internalPostProcessors = new ArrayList<>();
+
 		List<String> orderedPostProcessorNames = new ArrayList<>();
 		List<String> nonOrderedPostProcessorNames = new ArrayList<>();
 		for (String ppName : postProcessorNames) {

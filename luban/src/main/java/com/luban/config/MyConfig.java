@@ -33,12 +33,12 @@ public class MyConfig {
 		return messageSource;
 	}
 
-	@Bean
-	public ApplicationListener applicationListener() {
-		return (ApplicationEvent event) -> {
-				System.out.println("接收到了一个事件" + event.getSource().toString());
-		};
-	}
+//	@Bean
+//	public ApplicationListener applicationListener() {
+//		return (ApplicationEvent event) -> {
+//				System.out.println("接收到了一个事件" + event.getSource().toString());
+//		};
+//	}
 
 	@Bean
 	public CustomEditorConfigurer customEditorConfigurer() {

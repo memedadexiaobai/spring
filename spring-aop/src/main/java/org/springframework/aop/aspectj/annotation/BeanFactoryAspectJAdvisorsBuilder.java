@@ -107,7 +107,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 						if (this.advisorFactory.isAspect(beanType)) {
 							aspectNames.add(beanName);
 							AspectMetadata amd = new AspectMetadata(beanType, beanName);
-							//
+
 							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
 								MetadataAwareAspectInstanceFactory factory =
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
@@ -151,6 +151,8 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 			}
 			else {
 				MetadataAwareAspectInstanceFactory factory = this.aspectFactoryCache.get(aspectName);
+				//* Interface for factories that can create Spring AOP Advisors from classes
+				// * annotated with AspectJ annotation syntax.
 				advisors.addAll(this.advisorFactory.getAdvisors(factory));
 			}
 		}

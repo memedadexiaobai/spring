@@ -77,13 +77,14 @@ class ConditionEvaluator {
 	 * @return if the item should be skipped
 	 */
 	public boolean shouldSkip(@Nullable AnnotatedTypeMetadata metadata, @Nullable ConfigurationPhase phase) {
+		//metadata 为 null  或者 metadata不存在Conditional及其衍生注解的情况下
 		if (metadata == null || !metadata.isAnnotated(Conditional.class.getName())) {
 			return false;
 		}
 
 		if (phase == null) {
 			if (metadata instanceof AnnotationMetadata &&
-					//判断是否符合存在Component ComponentScan Import ImportResource注解 和 @bean 方法
+					//判断是否符合存在 Component ComponentScan Import ImportResource注解 和 @bean 方法
 					ConfigurationClassUtils.isConfigurationCandidate((AnnotationMetadata) metadata)) {
 				return shouldSkip(metadata, ConfigurationPhase.PARSE_CONFIGURATION);
 			}
@@ -95,6 +96,7 @@ class ConditionEvaluator {
 		//Conditional 注解 只有一个value属性 Class<? extends Condition>[] value();
 		// value中的元素相当于对 Conditional 的解析 也就是符合那种情况  这种存在
 		//存在value里边是多个值的情况
+		//参考 @Profile 的实现
 		for (String[] conditionClasses : getConditionClasses(metadata)) {  //先获取该类中标了Conditional注解的所有类
 			for (String conditionClass : conditionClasses) { //遍历value中的多个类
 				Condition condition = getCondition(conditionClass, this.context.getClassLoader());  //加载Condition类并实例化

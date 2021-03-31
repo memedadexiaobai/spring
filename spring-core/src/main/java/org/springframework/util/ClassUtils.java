@@ -759,12 +759,14 @@ public abstract class ClassUtils {
 	 */
 	public static Set<Class<?>> getAllInterfacesForClassAsSet(Class<?> clazz, @Nullable ClassLoader classLoader) {
 		Assert.notNull(clazz, "Class must not be null");
+		//当前class是接口并且该类在指定的classLoader中是可见的
 		if (clazz.isInterface() && isVisible(clazz, classLoader)) {
 			return Collections.singleton(clazz);
 		}
 		Set<Class<?>> interfaces = new LinkedHashSet<>();
 		Class<?> current = clazz;
 		while (current != null) {
+			//该类直接实现的接口
 			Class<?>[] ifcs = current.getInterfaces();
 			for (Class<?> ifc : ifcs) {
 				if (isVisible(ifc, classLoader)) {

@@ -103,6 +103,7 @@ public abstract class AutoProxyUtils {
 
 	/**
 	 * Expose the given target class for the specified bean, if possible.
+	 * 相当于把原始类型存起来了
 	 * @param beanFactory the containing ConfigurableListableBeanFactory
 	 * @param beanName the name of the bean
 	 * @param targetClass the corresponding target class
@@ -124,9 +125,10 @@ public abstract class AutoProxyUtils {
 	 * @param beanClass the corresponding bean class
 	 * @since 5.1
 	 * @see AutowireCapableBeanFactory#ORIGINAL_INSTANCE_SUFFIX
+	 * 标识是不是原始的实例
 	 */
 	static boolean isOriginalInstance(String beanName, Class<?> beanClass) {
-		if (!StringUtils.hasLength(beanName) || beanName.length() !=
+		if (!StringUtils.hasLength(beanName) || beanName.length() != //String ORIGINAL_INSTANCE_SUFFIX = ".ORIGINAL";
 				beanClass.getName().length() + AutowireCapableBeanFactory.ORIGINAL_INSTANCE_SUFFIX.length()) {
 			return false;
 		}

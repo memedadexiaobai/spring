@@ -1015,6 +1015,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			this.frozenBeanDefinitionNames = null;
 		}
 
+		//如果当前 BeanDefinition 已经存在并且存在 单例池中的话 需要重置和当前 beanName 相关的 BeanDefinition
 		if (existingDefinition != null || containsSingleton(beanName)) {
 			resetBeanDefinition(beanName);
 		}

@@ -52,7 +52,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 			Advised config, Method method, @Nullable Class<?> targetClass) {
 
 		// This is somewhat tricky... We have to process introductions first,
-		// but we need to preserve order in the ultimate list.
+		// but we need to preserve(保存) order in the ultimate(最终的) list.
 		AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance();
 		Advisor[] advisors = config.getAdvisors(); // ProxyFactory中设置的所有Advisor
 		List<Object> interceptorList = new ArrayList<>(advisors.length);

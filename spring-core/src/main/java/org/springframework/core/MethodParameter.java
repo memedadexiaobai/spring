@@ -70,7 +70,7 @@ public class MethodParameter {
 	@Nullable
 	private volatile Parameter parameter;
 
-	private int nestingLevel;
+	private int nestingLevel;//nesting 嵌套
 
 	/** Map from Integer level to Integer type index. */
 	@Nullable

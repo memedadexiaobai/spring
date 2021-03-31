@@ -224,6 +224,7 @@ public abstract class AopUtils {
 	// Advisor中的切点和当前targetClass是否匹配
 	public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasIntroductions) {
 		Assert.notNull(pc, "Pointcut must not be null");
+		//先匹配类粒度
 		if (!pc.getClassFilter().matches(targetClass)) {
 			return false;
 		}
@@ -240,10 +241,11 @@ public abstract class AopUtils {
 		}
 
 		Set<Class<?>> classes = new LinkedHashSet<>();
+		//是否是代理类
 		if (!Proxy.isProxyClass(targetClass)) {
-			classes.add(ClassUtils.getUserClass(targetClass));
+			classes.add(ClassUtils.getUserClass(targetClass));//添加的是被代理的类
 		}
-		classes.addAll(ClassUtils.getAllInterfacesForClassAsSet(targetClass));
+		classes.addAll(ClassUtils.getAllInterfacesForClassAsSet(targetClass));//添加该类实现的所有的接口
 
 		// 遍历targetClass已经targetClass的父类和接口中的所有方法
 		for (Class<?> clazz : classes) {
@@ -288,7 +290,7 @@ public abstract class AopUtils {
 		}
 		else if (advisor instanceof PointcutAdvisor) {
 			PointcutAdvisor pca = (PointcutAdvisor) advisor;
-			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
+			return canApply(pca.getPointcut(), targetClass, hasIntroductions);// hasIntroductions 为false
 		}
 		else {
 			// It doesn't have a pointcut so we assume it applies.

@@ -12,4 +12,5 @@ public class LubanAspect {
 	public void test() {
 
 	}
+
 }

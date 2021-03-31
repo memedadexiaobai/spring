@@ -135,6 +135,7 @@ public abstract class AopProxyUtils {
 		boolean addSpringProxy = !advised.isInterfaceProxied(SpringProxy.class);
 		boolean addAdvised = !advised.isOpaque() && !advised.isInterfaceProxied(Advised.class);
 		boolean addDecoratingProxy = (decoratingProxy && !advised.isInterfaceProxied(DecoratingProxy.class));
+
 		int nonUserIfcCount = 0;
 		if (addSpringProxy) {
 			nonUserIfcCount++;
@@ -145,6 +146,7 @@ public abstract class AopProxyUtils {
 		if (addDecoratingProxy) {
 			nonUserIfcCount++;
 		}
+
 		Class<?>[] proxiedInterfaces = new Class<?>[specifiedInterfaces.length + nonUserIfcCount];
 		System.arraycopy(specifiedInterfaces, 0, proxiedInterfaces, 0, specifiedInterfaces.length);
 		int index = specifiedInterfaces.length;

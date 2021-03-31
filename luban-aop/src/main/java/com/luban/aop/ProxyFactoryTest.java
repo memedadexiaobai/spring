@@ -19,12 +19,7 @@ public class ProxyFactoryTest {
 			@Override
 			public void before(Method method, Object[] args, Object target) throws Throwable {
 				// method表示当前执行的方法,args表示执行方法的参数,target表示target对象
-
-
-
 				System.out.println("执行目标方法调用之前的逻辑");
-
-
 			}
 		});
 
